@@ -1,64 +1,89 @@
 #!/usr/bin/python3
-
+import json
 import pytest
-from brownie_tokens import MintableForkToken
-from brownie import Contract
+from pathlib import Path
+from brownie.project.main import get_loaded_projects
 
-USD_AMOUNT = 1000
+POOLS = ['3pool', 'aave', 'aeth', 'bbtc', 'busd', 'compound', 'dusd', 'gusd', 'hbtc', 'husd', 'ib', 'link', 'musd', 'obtc',
+         'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdn', 'usdp', 'usdt',
+         'ust', 'y']  # 'eurs'
 
+LENDING_POOLS = ['compound', 'usdt', 'y', 'busd', 'pax', 'aave', 'saave', 'ib']
+META_POOLS = ['gusd', 'husd', 'usdk', 'usdn', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp']
+#  'tusd', 'frax', 'lusd', 'busdv2', 'alusd', 'mim' ()
 
-@pytest.fixture(scope="session")
-def dai():
-    yield MintableForkToken('0x6B175474E89094C44Da98b954EedeAC495271d0F')
+pytest_plugins = [
+    "fixtures.accounts",
+    "fixtures.coins",
+    "fixtures.deployments",
+    "fixtures.pooldata",
+    "fixtures.setup",
+]
 
-
-@pytest.fixture(scope="session")
-def usdc():
-    yield MintableForkToken('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')
-
-
-@pytest.fixture(scope="session")
-def usdt():
-    yield MintableForkToken('0xdAC17F958D2ee523a2206206994597C13D831ec7')
-
-
-@pytest.fixture(scope="session")
-def _3Crv():
-    yield Contract('0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490')
+_pooldata = {}
 
 
-@pytest.fixture(scope="session")
-def gauge():
-    yield Contract('0xbFcF63294aD7105dEa65aA58F8AE5BE2D9d0952A')
+def pytest_addoption(parser):
+    parser.addoption("--test_type", help="wrapped or underlying")
+    parser.addoption("--pool", help="comma-separated list of pools to target")
 
 
-@pytest.fixture(scope="session")
-def margo(accounts):
-    yield accounts[0]
+def pytest_sessionstart():
+    # load `pooldata.json` for each pool
+    project = get_loaded_projects()[0]
+    for path in [i for i in project._path.glob("contracts/pools/*") if i.is_dir()]:
+        with path.joinpath("pooldata.json").open() as fp:
+            _pooldata[path.name] = json.load(fp)
+            _pooldata[path.name].update(name=path.name)
+
+    for _, data in _pooldata.items():
+        if "base_pool" in data:
+            data["base_pool"] = _pooldata[data["base_pool"]]
 
 
-@pytest.fixture(scope="function", autouse=True)
-def isolate(fn_isolation):
-    # perform a chain rewind after completing each test, to ensure proper isolation
-    # https://eth-brownie.readthedocs.io/en/v1.10.3/tests-pytest-intro.html#isolation-fixtures
+def pytest_ignore_collect(path, config):
+    project = get_loaded_projects()[0]
+    path = Path(path).relative_to(project._path)
+    test_file = path.parts[1]
+
+    test_type = config.getoption("test_type") or 'wrapped'
+
+    if test_type == 'wrapped' and test_file == 'test_underlying.py':
+        return True
+
+    if test_type == 'underlying' and test_file == 'test_wrapped.py':
+        return True
+
+    if test_type != 'wrapped' and test_type != 'underlying':
+        raise ValueError('Invalid --test_type option')
+
+
+def pytest_generate_tests(metafunc):
+    test_type = metafunc.config.getoption("test_type") or 'wrapped'
+
+    try:
+        params = metafunc.config.getoption("pool").split(",")
+    except Exception:
+        params = POOLS if test_type == 'wrapped' else LENDING_POOLS + META_POOLS
+
+    if test_type == 'underlying':
+        for pool in params:
+            if pool not in LENDING_POOLS + META_POOLS:
+                raise ValueError(f"Underlying test for {pool} pool is not available")
+
+    metafunc.parametrize("pool_data", params, indirect=True, scope="session")
+
+
+@pytest.fixture(autouse=True)
+def isolation_setup(fn_isolation):
     pass
 
 
 @pytest.fixture(scope="module")
-def zap(deposit_and_stake_zap, margo):
-    return deposit_and_stake_zap.deploy({'from': margo})
+def pool_data(request):
+    return _pooldata[request.param]
 
 
-@pytest.fixture(scope="module", autouse=True)
-def mint(margo, dai, usdc, usdt):
-    dai._mint_for_testing(margo.address, USD_AMOUNT * 10 ** 18)
-    usdc._mint_for_testing(margo.address, USD_AMOUNT * 10 ** 6)
-    usdt._mint_for_testing(margo.address, USD_AMOUNT * 10 ** 6)
-
-
-@pytest.fixture(scope="module", autouse=True)
-def approvals(zap, margo, dai, usdc, usdt, gauge):
-    dai.approve(zap.address, 2 ** 256 - 1, {'from': margo})
-    usdc.approve(zap.address, 2 ** 256 - 1, {'from': margo})
-    usdt.approve(zap.address, 2 ** 256 - 1, {'from': margo})
-    gauge.set_approve_deposit(zap.address, True, {'from': margo})
+@pytest.fixture(scope="module")
+def base_pool_data(pool_data):
+    return pool_data.get("base_pool", None)
