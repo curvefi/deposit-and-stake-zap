@@ -56,6 +56,27 @@ allowance: HashMap[address, bool]
 
 
 
+@internal
+def _add_liquidity(deposit_address: address, n_coins: int128, amounts: uint256[MAX_COINS], min_mint_amount: uint256, eth_value: uint256, use_underlying: bool):
+    if use_underlying:
+        if n_coins == 2:
+            PoolUseUnderlying2(deposit_address).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
+        elif n_coins == 3:
+            PoolUseUnderlying3(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, True, value=eth_value)
+        elif n_coins == 4:
+            PoolUseUnderlying4(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, True, value=eth_value)
+        elif n_coins == 5:
+            PoolUseUnderlying5(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, True, value=eth_value)
+    else:
+        if n_coins == 2:
+            Pool2(deposit_address).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=eth_value)
+        elif n_coins == 3:
+            Pool3(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
+        elif n_coins == 4:
+            Pool4(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
+        elif n_coins == 5:
+            Pool5(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
+
 
 @payable
 @external
@@ -121,14 +142,8 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
     if not has_eth:
         assert msg.value == 0
 
-    if n_coins == 2:
-        Pool2(swap).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=msg.value)
-    elif n_coins == 3:
-        Pool3(swap).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, value=msg.value)
-    elif n_coins == 4:
-        Pool4(swap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=msg.value)
-    elif n_coins == 5:
-        Pool5(swap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=msg.value)
+    # Reverts if n_coins is wrong
+    self._add_liquidity(swap, n_coins, amounts, min_mint_amount, msg.value, False)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0 # dev: swap-token mismatch
@@ -199,14 +214,8 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
     if not has_eth:
         assert msg.value == 0
 
-    if n_coins == 2:
-        PoolUseUnderlying2(swap).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=msg.value)
-    elif n_coins == 3:
-        PoolUseUnderlying3(swap).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, True, value=msg.value)
-    elif n_coins == 4:
-        PoolUseUnderlying4(swap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, True, value=msg.value)
-    elif n_coins == 5:
-        PoolUseUnderlying5(swap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, True, value=msg.value)
+    # Reverts if n_coins is wrong
+    self._add_liquidity(swap, n_coins, amounts, min_mint_amount, msg.value, True)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0  # dev: swap-token mismatch
@@ -278,14 +287,8 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
     if not has_eth:
         assert msg.value == 0
 
-    if n_coins == 2:
-        Pool2(zap).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=msg.value)
-    elif n_coins == 3:
-        Pool3(zap).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, value=msg.value)
-    elif n_coins == 4:
-        Pool4(zap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=msg.value)
-    elif n_coins == 5:
-        Pool5(zap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=msg.value)
+    # Reverts if n_coins is wrong
+    self._add_liquidity(zap, n_coins, amounts, min_mint_amount, msg.value, False)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0 # dev: swap-token mismatch
@@ -369,14 +372,8 @@ def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: ad
     if not has_eth:
         assert msg.value == 0
 
-    if n_coins == 2:
-        Pool2(zap).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=msg.value)
-    elif n_coins == 3:
-        Pool3(zap).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, value=msg.value)
-    elif n_coins == 4:
-        Pool4(zap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=msg.value)
-    elif n_coins == 5:
-        Pool5(zap).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=msg.value)
+    # Reverts if n_coins is wrong
+    self._add_liquidity(zap, n_coins, amounts, min_mint_amount, msg.value, False)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0 # dev: swap-token mismatch
