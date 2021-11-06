@@ -2,7 +2,7 @@
 # A "zap" to add liquidity and deposit into gauge in one transaction
 # (c) Curve.Fi, 2021
 
-MAX_COINS: constant(int128) = 10
+MAX_COINS: constant(int128) = 5
 ETH_ADDRESS: constant(address) = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
 
 # External Contracts
@@ -60,7 +60,7 @@ allowance: HashMap[address, bool]
 @payable
 @external
 @nonreentrant('lock')
-def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[10], min_mint_amount: uint256, is_v1: bool):
+def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[MAX_COINS], min_mint_amount: uint256, is_v1: bool):
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
@@ -139,7 +139,7 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
 @payable
 @external
 @nonreentrant('lock')
-def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[10], min_mint_amount: uint256, is_v1: bool):
+def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[MAX_COINS], min_mint_amount: uint256, is_v1: bool):
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
@@ -217,7 +217,7 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
 @payable
 @external
 @nonreentrant('lock')
-def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[10], min_mint_amount: uint256, is_v1: bool):
+def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[MAX_COINS], min_mint_amount: uint256, is_v1: bool):
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
@@ -296,7 +296,7 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
 @payable
 @external
 @nonreentrant('lock')
-def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[10], min_mint_amount: uint256, is_v1: bool):
+def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: address, n_coins: int128, amounts: uint256[MAX_COINS], min_mint_amount: uint256, is_v1: bool):
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 

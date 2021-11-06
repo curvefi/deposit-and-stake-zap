@@ -80,12 +80,12 @@ def underlying_amounts_to_mint(underlying_decimals):
 
 @pytest.fixture(scope="module")
 def wrapped_amounts(wrapped_decimals, n_coins_wrapped):
-    return [10 * 10 ** i for i in wrapped_decimals] + [0] * (10 - n_coins_wrapped)
+    return [10 * 10 ** i for i in wrapped_decimals] + [0] * (5 - n_coins_wrapped)
 
 
 @pytest.fixture(scope="module")
 def underlying_amounts(underlying_decimals, n_coins_underlying):
-    return [10 * 10 ** i for i in underlying_decimals] + [0] * (10 - n_coins_underlying)
+    return [10 * 10 ** i for i in underlying_decimals] + [0] * (5 - n_coins_underlying)
 
 
 @pytest.fixture(scope="module")
