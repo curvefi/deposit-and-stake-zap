@@ -1,77 +1,51 @@
-# token-mix
+# Deposit&Stake Zap
 
-A bare-bones implementation of the Ethereum [ERC-20 standard](https://eips.ethereum.org/EIPS/eip-20), written in [Solidity](https://github.com/ethereum/solidity).
+Smart contract which allows add liquidity and deposit into gauge in one transaction.
 
-For [Vyper](https://github.com/vyperlang/vyper), check out [`vyper-token-mix`](https://github.com/brownie-mix/vyper-token-mix).
+## Testing and Development
 
-## Installation
+### Dependencies
 
-1. [Install Brownie](https://eth-brownie.readthedocs.io/en/stable/install.html), if you haven't already.
+- [python3](https://www.python.org/downloads/release/python-368/) version 3.6 or greater, python3-dev
+- [vyper](https://github.com/vyperlang/vyper) version [0.3.0](https://github.com/vyperlang/vyper/releases/tag/v0.3.0)
+- [brownie](https://github.com/iamdefinitelyahuman/brownie) - tested with version [1.17.0](https://github.com/eth-brownie/brownie/releases/tag/v1.17.0)
+- [brownie-token-tester](https://github.com/iamdefinitelyahuman/brownie-token-tester) - tested with version [0.3.2](https://github.com/iamdefinitelyahuman/brownie-token-tester/releases/tag/v0.3.2)
+- [ganache-cli](https://github.com/trufflesuite/ganache-cli) - tested with version [6.12.2](https://github.com/trufflesuite/ganache-cli/releases/tag/v6.12.2)
 
-2. Download the mix.
+### Setup
 
-    ```bash
-    brownie bake token
-    ```
-
-## Basic Use
-
-This mix provides a [simple template](contracts/Token.sol) upon which you can build your own token, as well as unit tests providing 100% coverage for core ERC20 functionality.
-
-To interact with a deployed contract in a local environment, start by opening the console:
+To get started, first create and initialize a Python [virtual environment](https://docs.python.org/3/library/venv.html). Next, clone the repo and install the developer dependencies:
 
 ```bash
-brownie console
+git clone https://github.com/Macket/deposit_and_stake_zap  <--- CHANGE
+cd deposit-and-stake-zap
+pip install -r requirements.txt
 ```
 
-Next, deploy a test token:
+### Running the Tests
 
-```python
->>> token = Token.deploy("Test Token", "TST", 18, 1e21, {'from': accounts[0]})
-
-Transaction sent: 0x4a61edfaaa8ba55573603abd35403cf41291eca443c983f85de06e0b119da377
-  Gas price: 0.0 gwei   Gas limit: 12000000
-  Token.constructor confirmed - Block: 1   Gas used: 521513 (4.35%)
-  Token deployed at: 0xd495633B90a237de510B4375c442C0469D3C161C
-```
-
-You now have a token contract deployed, with a balance of `1e21` assigned to `accounts[0]`:
-
-```python
->>> token
-<Token Contract '0xd495633B90a237de510B4375c442C0469D3C161C'>
-
->>> token.balanceOf(accounts[0])
-1000000000000000000000
-
->>> token.transfer(accounts[1], 1e18, {'from': accounts[0]})
-Transaction sent: 0xb94b219148501a269020158320d543946a4e7b9fac294b17164252a13dce9534
-  Gas price: 0.0 gwei   Gas limit: 12000000
-  Token.transfer confirmed - Block: 2   Gas used: 51668 (0.43%)
-
-<Transaction '0xb94b219148501a269020158320d543946a4e7b9fac294b17164252a13dce9534'>
-```
-
-## Testing
-
-To run the tests:
+To run the entire suite:
 
 ```bash
-brownie test
+brownie test --network mainnet-fork
 ```
 
-The unit tests included in this mix are very generic and should work with any ERC20 compliant smart contract. To use them in your own project, all you must do is modify the deployment logic in the [`tests/conftest.py::token`](test-examples/conftest.py) fixture.
+To run for particular pools:
 
-## Resources
+```bash
+brownie test --pool 3pool,usdt --network mainnet-fork
+```
 
-To get started with Brownie:
+To run only underlying/wrapped tests:
 
-* Check out the other [Brownie mixes](https://github.com/brownie-mix/) that can be used as a starting point for your own contracts. They also provide example code to help you get started.
-* ["Getting Started with Brownie"](https://medium.com/@iamdefinitelyahuman/getting-started-with-brownie-part-1-9b2181f4cb99) is a good tutorial to help you familiarize yourself with Brownie.
-* For more in-depth information, read the [Brownie documentation](https://eth-brownie.readthedocs.io/en/stable/).
+```bash
+brownie test --test_type underlying --network mainnet-fork
 
+or
 
-Any questions? Join our [Gitter](https://gitter.im/eth-brownie/community) channel to chat and share with others in the community.
+brownie test --test_type wrapped --network mainnet-fork
+```
+
 
 ## License
 
