@@ -12,6 +12,7 @@ interface ERC20:
     def approve(_spender: address, _amount: uint256): nonpayable
     def decimals() -> uint256: view
     def balanceOf(_owner: address) -> uint256: view
+    def allowance(_owner : address, _spender : address) -> uint256: view
 
 interface Pool:
     def coins(i: int128) -> address: view
@@ -53,6 +54,9 @@ interface Gauge:
 
 allowance: HashMap[address, bool]
 
+
+
+
 @payable
 @external
 @nonreentrant('lock')
@@ -78,9 +82,8 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
 
             ERC20(in_coin).approve(swap, MAX_UINT256)
 
-    if not self.allowance[gauge]:
-        self.allowance[gauge] = True
-        ERC20(lp_token).approve(gauge, MAX_UINT256)
+        if ERC20(lp_token).allowance(self, gauge) == 0:
+            ERC20(lp_token).approve(gauge, MAX_UINT256)
 
     # Transfer coins from owner
     has_eth: bool = False
@@ -157,9 +160,8 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
 
             ERC20(in_coin).approve(swap, MAX_UINT256)
 
-    if not self.allowance[gauge]:
-        self.allowance[gauge] = True
-        ERC20(lp_token).approve(gauge, MAX_UINT256)
+        if ERC20(lp_token).allowance(self, gauge) == 0:
+            ERC20(lp_token).approve(gauge, MAX_UINT256)
 
     # Transfer coins from owner
     has_eth: bool = False
@@ -237,9 +239,8 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
 
             ERC20(in_coin).approve(zap, MAX_UINT256)
 
-    if not self.allowance[gauge]:
-        self.allowance[gauge] = True
-        ERC20(lp_token).approve(gauge, MAX_UINT256)
+        if ERC20(lp_token).allowance(self, gauge) == 0:
+            ERC20(lp_token).approve(gauge, MAX_UINT256)
 
     # Transfer coins from owner
     has_eth: bool = False
@@ -323,9 +324,8 @@ def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: ad
 
             ERC20(in_coin).approve(zap, MAX_UINT256)
 
-    if not self.allowance[gauge]:
-        self.allowance[gauge] = True
-        ERC20(lp_token).approve(gauge, MAX_UINT256)
+        if ERC20(lp_token).allowance(self, gauge) == 0:
+            ERC20(lp_token).approve(gauge, MAX_UINT256)
 
     # Transfer coins from owner
     has_eth: bool = False
