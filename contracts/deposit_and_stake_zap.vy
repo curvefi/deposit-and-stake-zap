@@ -79,6 +79,22 @@ def _add_liquidity(deposit_address: address, n_coins: int128, amounts: uint256[M
             Pool5(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
 
 
+@internal
+def _safe_transfer(coin: address, from_address: address, amount: uint256):
+    # "safeTransferFrom" which works for ERC20s which return bool or not
+    _response: Bytes[32] = raw_call(
+        coin,
+        concat(
+            method_id("transferFrom(address,address,uint256)"),
+            convert(from_address, bytes32),
+            convert(self, bytes32),
+            convert(amount, bytes32),
+        ),
+        max_outsize=32,
+    )  # dev: failed transfer
+    if len(_response) > 0:
+        assert convert(_response, bool)  # dev: failed transfer
+
 @payable
 @external
 @nonreentrant('lock')
@@ -86,6 +102,7 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
+    # Approving swap
     if not self.allowance[swap]:
         self.allowance[swap] = True
 
@@ -124,19 +141,7 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
             continue
 
         if in_amount > 0:
-            # "safeTransferFrom" which works for ERC20s which return bool or not
-            _response: Bytes[32] = raw_call(
-                in_coin,
-                concat(
-                    method_id("transferFrom(address,address,uint256)"),
-                    convert(msg.sender, bytes32),
-                    convert(self, bytes32),
-                    convert(in_amount, bytes32),
-                ),
-                max_outsize=32,
-            )  # dev: failed transfer
-            if len(_response) > 0:
-                assert convert(_response, bool)  # dev: failed transfer
+            self._safe_transfer(in_coin, msg.sender, in_amount)
 
     if not has_eth:
         assert msg.value == 0
@@ -157,6 +162,7 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
+    # Approving swap
     if not self.allowance[swap]:
         self.allowance[swap] = True
         for i in range(MAX_COINS):
@@ -194,19 +200,7 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
             continue
 
         if in_amount > 0:
-            # "safeTransferFrom" which works for ERC20s which return bool or not
-            _response: Bytes[32] = raw_call(
-                in_coin,
-                concat(
-                    method_id("transferFrom(address,address,uint256)"),
-                    convert(msg.sender, bytes32),
-                    convert(self, bytes32),
-                    convert(in_amount, bytes32),
-                ),
-                max_outsize=32,
-            )  # dev: failed transfer
-            if len(_response) > 0:
-                assert convert(_response, bool)  # dev: failed transfer
+            self._safe_transfer(in_coin, msg.sender, in_amount)
 
     if not has_eth:
         assert msg.value == 0
@@ -227,6 +221,7 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
+    # Approving zap
     if not self.allowance[zap]:
         self.allowance[zap] = True
 
@@ -265,19 +260,7 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
             continue
 
         if in_amount > 0:
-            # "safeTransferFrom" which works for ERC20s which return bool or not
-            _response: Bytes[32] = raw_call(
-                in_coin,
-                concat(
-                    method_id("transferFrom(address,address,uint256)"),
-                    convert(msg.sender, bytes32),
-                    convert(self, bytes32),
-                    convert(in_amount, bytes32),
-                ),
-                max_outsize=32,
-            )  # dev: failed transfer
-            if len(_response) > 0:
-                assert convert(_response, bool)  # dev: failed transfer
+            self._safe_transfer(in_coin, msg.sender, in_amount)
 
     if not has_eth:
         assert msg.value == 0
@@ -298,6 +281,7 @@ def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: ad
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
 
+    # Approving zap
     if not self.allowance[zap]:
         self.allowance[zap] = True
 
@@ -342,19 +326,7 @@ def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: ad
             continue
 
         if in_amount > 0:
-            # "safeTransferFrom" which works for ERC20s which return bool or not
-            _response: Bytes[32] = raw_call(
-                in_coin,
-                concat(
-                    method_id("transferFrom(address,address,uint256)"),
-                    convert(msg.sender, bytes32),
-                    convert(self, bytes32),
-                    convert(in_amount, bytes32),
-                ),
-                max_outsize=32,
-            )  # dev: failed transfer
-            if len(_response) > 0:
-                assert convert(_response, bool)  # dev: failed transfer
+            self._safe_transfer(in_coin, msg.sender, in_amount)
 
     if not has_eth:
         assert msg.value == 0
