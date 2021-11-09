@@ -53,7 +53,8 @@ interface Gauge:
 
 
 allowance: HashMap[address, bool]
-
+coins: HashMap[address, address[MAX_COINS]]
+underlying_coins: HashMap[address, address[MAX_COINS]]
 
 
 @internal
@@ -98,6 +99,8 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
             else:
                 in_coin = PoolV1(swap).coins(convert(i, uint256))
 
+            self.coins[swap][i] = in_coin
+
             if in_coin == ETH_ADDRESS:
                 continue
 
@@ -113,14 +116,10 @@ def deposit_and_stake(swap: address, lp_token: address, gauge: address, n_coins:
             break
 
         in_amount: uint256 = amounts[i]
-        in_coin: address = ZERO_ADDRESS
-        if is_v1:
-            in_coin = Pool(swap).coins(i)
-        else:
-            in_coin = PoolV1(swap).coins(convert(i, uint256))
+        in_coin: address = self.coins[swap][i]
 
         if in_coin == ETH_ADDRESS:
-            assert msg.value == amounts[i]
+            assert msg.value == in_amount
             has_eth = True
             continue
 
@@ -170,6 +169,8 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
             else:
                 in_coin = PoolV1(swap).underlying_coins(convert(i, uint256))
 
+            self.underlying_coins[swap][i] = in_coin
+
             if in_coin == ETH_ADDRESS:
                 continue
 
@@ -185,14 +186,10 @@ def deposit_and_stake_underlying(swap: address, lp_token: address, gauge: addres
             break
 
         in_amount: uint256 = amounts[i]
-        in_coin: address = ZERO_ADDRESS
-        if is_v1:
-            in_coin = Pool(swap).underlying_coins(i)
-        else:
-            in_coin = PoolV1(swap).underlying_coins(convert(i, uint256))
+        in_coin: address = self.underlying_coins[swap][i]
 
         if in_coin == ETH_ADDRESS:
-            assert msg.value == amounts[i]
+            assert msg.value == in_amount
             has_eth = True
             continue
 
@@ -243,6 +240,8 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
             else:
                 in_coin = PoolV1(zap).underlying_coins(convert(i, uint256))
 
+            self.underlying_coins[zap][i] = in_coin
+
             if in_coin == ETH_ADDRESS:
                 continue
 
@@ -258,11 +257,7 @@ def deposit_and_stake_underlying_zap(zap: address, lp_token: address, gauge: add
             break
 
         in_amount: uint256 = amounts[i]
-        in_coin: address = ZERO_ADDRESS
-        if is_v1:
-            in_coin = Pool(zap).underlying_coins(i)
-        else:
-            in_coin = PoolV1(zap).underlying_coins(convert(i, uint256))
+        in_coin: address = self.underlying_coins[zap][i]
 
         if in_coin == ETH_ADDRESS:
             assert msg.value == amounts[i]
@@ -322,6 +317,8 @@ def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: ad
                 else:
                     in_coin = PoolV1(zap).base_coins(convert(i - 1, uint256))
 
+            self.underlying_coins[zap][i] = in_coin
+
             if in_coin == ETH_ADDRESS:
                 continue
 
@@ -337,17 +334,7 @@ def deposit_and_stake_underlying_meta(zap: address, lp_token: address, gauge: ad
             break
 
         in_amount: uint256 = amounts[i]
-        in_coin: address = ZERO_ADDRESS
-        if is_v1:
-            if i == 0:
-                in_coin = Pool(zap).coins(i)
-            else:
-                in_coin = Pool(zap).base_coins(i - 1)
-        else:
-            if i == 0:
-                in_coin = PoolV1(zap).coins(convert(i, uint256))
-            else:
-                in_coin = PoolV1(zap).base_coins(convert(i - 1, uint256))
+        in_coin: address = self.underlying_coins[zap][i]
 
         if in_coin == ETH_ADDRESS:
             assert msg.value == amounts[i]
