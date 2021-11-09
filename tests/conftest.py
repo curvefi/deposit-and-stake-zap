@@ -24,7 +24,7 @@ _pooldata = {}
 
 
 def pytest_addoption(parser):
-    parser.addoption("--test_type", help="wrapped or underlying")
+    parser.addoption("--coins", help="wrapped or underlying")
     parser.addoption("--pool", help="comma-separated list of pools to target")
 
 
@@ -46,30 +46,35 @@ def pytest_ignore_collect(path, config):
     path = Path(path).relative_to(project._path)
     test_file = path.parts[1]
 
-    test_type = config.getoption("test_type") or 'wrapped'
+    coins = config.getoption("coins") or 'all'
 
-    if test_type == 'wrapped' and test_file == 'test_underlying.py':
+    if coins == 'wrapped' and test_file == 'test_underlying.py':
         return True
 
-    if test_type == 'underlying' and test_file == 'test_wrapped.py':
+    if coins == 'underlying' and test_file == 'test_wrapped.py':
         return True
 
-    if test_type != 'wrapped' and test_type != 'underlying':
-        raise ValueError('Invalid --test_type option')
+    if coins != 'wrapped' and coins != 'underlying' and coins != 'all':
+        raise ValueError('Invalid --coins option. Must be wrapped or underlying')
 
 
 def pytest_generate_tests(metafunc):
-    test_type = metafunc.config.getoption("test_type") or 'wrapped'
+    project = get_loaded_projects()[0]
+    path = Path(metafunc.definition.fspath).relative_to(project._path)
+    test_file = path.parts[1]
+    coins = metafunc.config.getoption("coins") or 'all'
 
     try:
         params = metafunc.config.getoption("pool").split(",")
     except Exception:
-        params = POOLS if test_type == 'wrapped' else LENDING_POOLS + META_POOLS
+        params = POOLS if coins == 'wrapped' else LENDING_POOLS + META_POOLS
 
-    if test_type == 'underlying':
-        for pool in params:
-            if pool not in LENDING_POOLS + META_POOLS:
-                raise ValueError(f"Underlying test for {pool} pool is not available")
+    for pool in params:
+        if pool not in POOLS:
+            raise ValueError(f"Invalid pool name: {pool}")
+
+    if test_file == 'test_underlying.py':
+        params = list(filter(lambda pool: pool in LENDING_POOLS + META_POOLS, params))
 
     metafunc.parametrize("pool_data", params, indirect=True, scope="session")
 
