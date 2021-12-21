@@ -113,7 +113,7 @@ def test_n_coins_too_high(
 
 def test_n_coins_too_low(
         zap, margo, swap_address, token_address, gauge_address, n_coins_wrapped,
-        wrapped_coin_addresses, wrapped_amounts, is_v1, value_wrapped
+        wrapped_coin_addresses, wrapped_amounts, value_wrapped
 ):
     with brownie.reverts():
         zap.deposit_and_stake(

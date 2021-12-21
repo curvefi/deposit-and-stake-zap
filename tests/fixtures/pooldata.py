@@ -119,6 +119,8 @@ def use_underlying(pool_data):
         "0xDeBF20617708857ebe4F679508E7b7863a8A8EeE",  # aave
         "0xeb16ae0052ed37f479f7fe63849198df1765a733",  # saave
         "0x2dded6Da1BF5DBdF597C45fcFaa3194e53EcfeAF",  # ib
+        "0x8301AE4fc9c624d1D396cbDAa1ed877821D7C511",  # crveth (use_eth)
+        "0xB576491F1E6e5E62f1d8F26062Ee822B40B0E0d4",  # cvxeth (use_eth)
     ]:
         return True
 
