@@ -138,7 +138,7 @@ def test_wrong_coins(
             deposit_address,
             token_address,
             gauge_address,
-            n_coins_underlying - 1,
+            n_coins_underlying,
             wrong_coin_addresses,
             underlying_amounts,
             0,
@@ -156,7 +156,7 @@ def test_wrong_order_of_coins(
             deposit_address,
             token_address,
             gauge_address,
-            n_coins_underlying - 1,
+            n_coins_underlying,
             underlying_coin_addresses_wrong_order,
             underlying_amounts,
             0,
@@ -165,7 +165,7 @@ def test_wrong_order_of_coins(
         )
 
 
-def test_wrong_value_underlying(
+def test_wrong_value(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
         underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
@@ -174,7 +174,7 @@ def test_wrong_value_underlying(
             deposit_address,
             token_address,
             gauge_address,
-            n_coins_underlying - 1,
+            n_coins_underlying,
             underlying_coin_addresses,
             underlying_amounts,
             0,
@@ -183,7 +183,7 @@ def test_wrong_value_underlying(
         )
 
 
-def test_wrong_value_use_underlying(
+def test_wrong_use_underlying(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
         underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
@@ -192,7 +192,7 @@ def test_wrong_value_use_underlying(
             deposit_address,
             token_address,
             gauge_address,
-            n_coins_underlying - 1,
+            n_coins_underlying,
             underlying_coin_addresses,
             underlying_amounts,
             0,
