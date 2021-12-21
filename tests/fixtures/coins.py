@@ -11,6 +11,7 @@ WRAPPED_COIN_METHODS = {
     "yERC20": {"get_rate": "getPricePerFullShare", "mint": "deposit"},
     "aETH": {"get_rate": "ratio"},
     "rETH": {"get_rate": "getExchangeRate"},
+    "WETH": {"mint": "deposit"},
 }
 
 
@@ -28,6 +29,34 @@ def underlying_coins(_underlying_coins, _base_coins):
         return _underlying_coins[:1] + _base_coins
     else:
         return _underlying_coins
+
+
+@pytest.fixture(scope="module")
+def wrong_coins(wrong_coin_addresses, pool_data):
+    return list(map(lambda x: _MintableTestToken(x, pool_data), wrong_coin_addresses))
+
+
+@pytest.fixture(scope="module")
+def wrapped_coin_addresses(wrapped_coins):
+    addresses = list(map(lambda x: x if type(x) is str else x.address, wrapped_coins))
+    return addresses + [ZERO_ADDRESS] * (5 - len(addresses))
+
+
+@pytest.fixture(scope="module")
+def underlying_coin_addresses(underlying_coins):
+    addresses = list(map(lambda x: x if type(x) is str else x.address, underlying_coins))
+    return addresses + [ZERO_ADDRESS] * (5 - len(addresses))
+
+
+@pytest.fixture(scope="module")
+def wrong_coin_addresses():
+    return [
+        "0x1456688345527bE1f37E9e627DA0837D6f08C925",  # USDP
+        "0x674C6Ad92Fd080e4004b2312b45f796a192D27a0",  # USDN
+        "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",  # MUSD
+        "0x5bc25f649fc4e26069ddf4cf4010f9f706c23831",  # DUSD
+        "0x1c48f86ae57291f7686349f12601910bd8d470bb",  # USDK
+    ]
 
 
 @pytest.fixture(scope="module")

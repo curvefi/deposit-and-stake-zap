@@ -4,50 +4,69 @@ import brownie
 pytestmark = pytest.mark.usefixtures("mint_margo", "approve_margo")
 
 
-def test_balance(
+def test_wrong_order_of_coins(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_amounts, is_v1, value_underlying, is_meta, has_zap, gauge
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
-    if is_meta:
-        zap.deposit_and_stake_underlying_meta(
-            deposit_address, token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-            {'from': margo, 'value': value_underlying}
-        )
-    elif has_zap:
-        zap.deposit_and_stake_underlying_zap(
-            deposit_address, token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-            {'from': margo, 'value': value_underlying}
-        )
-    else:
-        # aave, saave, ib
-        zap.deposit_and_stake_underlying(
-            deposit_address, token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
+    underlying_coin_addresses.reverse()
+    with brownie.reverts():
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying - 1,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
             {'from': margo, 'value': value_underlying}
         )
 
+
+def test_balance(
+        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
+        underlying_coin_addresses, underlying_amounts, value_underlying, gauge, use_underlying
+):
+    assert gauge.balanceOf(margo.address) == 0
+
+    zap.deposit_and_stake(
+        deposit_address,
+        token_address,
+        gauge_address,
+        n_coins_underlying,
+        underlying_coin_addresses,
+        underlying_amounts,
+        0,
+        use_underlying,
+        {'from': margo, 'value': value_underlying}
+    )
+
     assert gauge.balanceOf(margo.address) > 0
+    assert gauge.balanceOf(deposit_address) == 0
 
 
 def test_approve(
-        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_amounts, is_v1, value_underlying, is_meta, has_zap, underlying_coins, lp_token
+        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying, wrong_coin_addresses,
+        underlying_coin_addresses, underlying_amounts, value_underlying, underlying_coins, lp_token, use_underlying
 ):
-    if is_meta:
-        zap.deposit_and_stake_underlying_meta(
-            deposit_address, token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-            {'from': margo, 'value': value_underlying}
-        )
-    elif has_zap:
-        zap.deposit_and_stake_underlying_zap(
-            deposit_address, token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-            {'from': margo, 'value': value_underlying}
-        )
-    else:
-        # aave, saave, ib
-        zap.deposit_and_stake_underlying(
-            deposit_address, token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-            {'from': margo, 'value': value_underlying}
-        )
+    for coin in underlying_coins:
+        if coin == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE':
+            continue
+        assert coin.allowance(zap.address, deposit_address) == 0
+
+    assert lp_token.allowance(zap.address, gauge_address) == 0
+
+    zap.deposit_and_stake(
+        deposit_address,
+        token_address,
+        gauge_address,
+        n_coins_underlying,
+        underlying_coin_addresses,
+        underlying_amounts,
+        0,
+        use_underlying,
+        {'from': margo, 'value': value_underlying}
+    )
 
     for coin in underlying_coins:
         if coin == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE':
@@ -59,91 +78,125 @@ def test_approve(
 
 def test_token_mismatch(
         zap, margo, deposit_address, other_token_address, gauge_address, n_coins_underlying,
-        underlying_amounts, is_v1, value_underlying, is_meta, has_zap,
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
     with brownie.reverts("dev: swap-token mismatch"):
-        if is_meta:
-            zap.deposit_and_stake_underlying_meta(
-                deposit_address, other_token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        elif has_zap:
-            zap.deposit_and_stake_underlying_zap(
-                deposit_address, other_token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        else:
-            # aave, saave, ib
-            zap.deposit_and_stake_underlying(
-                deposit_address, other_token_address, gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
+        zap.deposit_and_stake(
+            deposit_address,
+            other_token_address,
+            gauge_address,
+            n_coins_underlying,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )
 
 
 def test_gauge_mismatch(
         zap, margo, deposit_address, token_address, other_gauge_address, n_coins_underlying,
-        underlying_amounts, is_v1, value_underlying, is_meta, has_zap,
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
     with brownie.reverts():
-        if is_meta:
-            zap.deposit_and_stake_underlying_meta(
-                deposit_address, token_address, other_gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        elif has_zap:
-            zap.deposit_and_stake_underlying_zap(
-                deposit_address, token_address, other_gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        else:
-            # aave, saave, ib
-            zap.deposit_and_stake_underlying(
-                deposit_address, token_address, other_gauge_address, n_coins_underlying, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            other_gauge_address,
+            n_coins_underlying,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )
 
 
 def test_n_coins_too_high(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_amounts, is_v1, value_underlying, is_meta, has_zap,
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
     with brownie.reverts():
-        if is_meta:
-            zap.deposit_and_stake_underlying_meta(
-                deposit_address, token_address, gauge_address, n_coins_underlying + 1, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        elif has_zap:
-            zap.deposit_and_stake_underlying_zap(
-                deposit_address, token_address, gauge_address, n_coins_underlying + 1, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        else:
-            # aave, saave, ib
-            zap.deposit_and_stake_underlying(
-                deposit_address, token_address, gauge_address, n_coins_underlying + 1, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying + 1,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )
 
 
 def test_n_coins_too_low(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_amounts, is_v1, value_underlying, is_meta, has_zap,
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
 ):
     with brownie.reverts():
-        if is_meta:
-            zap.deposit_and_stake_underlying_meta(
-                deposit_address, token_address, gauge_address, n_coins_underlying - 1, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        elif has_zap:
-            zap.deposit_and_stake_underlying_zap(
-                deposit_address, token_address, gauge_address, n_coins_underlying - 1, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
-        else:
-            # aave, saave, ib
-            zap.deposit_and_stake_underlying(
-                deposit_address, token_address, gauge_address, n_coins_underlying - 1, underlying_amounts, 0, is_v1,
-                {'from': margo, 'value': value_underlying}
-            )
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying - 1,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )
+
+
+def test_wrong_coins(
+        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
+        wrong_coin_addresses, underlying_amounts, value_underlying, use_underlying
+):
+    with brownie.reverts():
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying - 1,
+            wrong_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )
+
+
+def test_wrong_value_underlying(
+        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
+):
+    with brownie.reverts():
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying - 1,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': 0 if value_underlying > 0 else 10**18}
+        )
+
+
+def test_wrong_value_use_underlying(
+        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
+):
+    with brownie.reverts():
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying - 1,
+            underlying_coin_addresses,
+            underlying_amounts,
+            0,
+            not use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )

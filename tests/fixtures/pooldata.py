@@ -79,13 +79,18 @@ def underlying_amounts_to_mint(underlying_decimals):
 
 
 @pytest.fixture(scope="module")
+def wrong_amounts_to_mint():
+    return [100 * 10 ** 18] * 5
+
+
+@pytest.fixture(scope="module")
 def wrapped_amounts(wrapped_decimals, n_coins_wrapped):
-    return [10 * 10 ** i for i in wrapped_decimals] + [0] * (5 - n_coins_wrapped)
+    return [(10 + i) * 10 ** wrapped_decimals[i] for i in range(n_coins_wrapped)] + [0] * (5 - n_coins_wrapped)
 
 
 @pytest.fixture(scope="module")
 def underlying_amounts(underlying_decimals, n_coins_underlying):
-    return [10 * 10 ** i for i in underlying_decimals] + [0] * (5 - n_coins_underlying)
+    return [(10 + i) * 10 ** underlying_decimals[i] for i in range(n_coins_underlying)] + [0] * (5 - n_coins_underlying)
 
 
 @pytest.fixture(scope="module")
@@ -100,12 +105,24 @@ def n_coins_underlying(underlying_decimals):
 
 @pytest.fixture(scope="module")
 def value_wrapped(wrapped_amounts, wrapped_coins):
-    return wrapped_amounts[0] if brownie.ETH_ADDRESS in wrapped_coins else 0
+    return wrapped_amounts[wrapped_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in wrapped_coins else 0
 
 
 @pytest.fixture(scope="module")
 def value_underlying(underlying_amounts, underlying_coins):
-    return underlying_amounts[0] if brownie.ETH_ADDRESS in underlying_coins else 0
+    return underlying_amounts[underlying_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in underlying_coins else 0
+
+
+@pytest.fixture(scope="module")
+def use_underlying(pool_data):
+    if pool_data['swap_address'] in [
+        "0xDeBF20617708857ebe4F679508E7b7863a8A8EeE",  # aave
+        "0xeb16ae0052ed37f479f7fe63849198df1765a733",  # saave
+        "0x2dded6Da1BF5DBdF597C45fcFaa3194e53EcfeAF",  # ib
+    ]:
+        return True
+
+    return False
 
 
 @pytest.fixture(scope="module")
