@@ -6,11 +6,12 @@ from brownie.project.main import get_loaded_projects
 
 POOLS = ['3pool', 'aave', 'aeth', 'bbtc', 'busd', 'compound', 'dusd', 'gusd', 'hbtc', 'husd', 'ib', 'link', 'musd', 'obtc',
          'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdn', 'usdp', 'usdt',
-         'ust', 'y']  # 'eurs'
+         'ust', 'y', 'tricrypto2']  # 'eurs'
 
 LENDING_POOLS = ['compound', 'usdt', 'y', 'busd', 'pax', 'aave', 'saave', 'ib']
 META_POOLS = ['gusd', 'husd', 'usdk', 'usdn', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp']
 #  'tusd', 'frax', 'lusd', 'busdv2', 'alusd', 'mim' ()
+WETH_POOLS = ['tricrypto2']
 
 pytest_plugins = [
     "fixtures.accounts",
@@ -67,14 +68,14 @@ def pytest_generate_tests(metafunc):
     try:
         params = metafunc.config.getoption("pool").split(",")
     except Exception:
-        params = POOLS if coins == 'wrapped' else LENDING_POOLS + META_POOLS
+        params = POOLS if coins == 'wrapped' else LENDING_POOLS + META_POOLS + WETH_POOLS
 
     for pool in params:
         if pool not in POOLS:
             raise ValueError(f"Invalid pool name: {pool}")
 
     if test_file == 'test_underlying.py':
-        params = list(filter(lambda pool: pool in LENDING_POOLS + META_POOLS, params))
+        params = list(filter(lambda pool: pool in LENDING_POOLS + META_POOLS + WETH_POOLS, params))
 
     metafunc.parametrize("pool_data", params, indirect=True, scope="session")
 
