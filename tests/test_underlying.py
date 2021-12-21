@@ -4,25 +4,6 @@ import brownie
 pytestmark = pytest.mark.usefixtures("mint_margo", "approve_margo")
 
 
-def test_wrong_order_of_coins(
-        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying
-):
-    underlying_coin_addresses.reverse()
-    with brownie.reverts():
-        zap.deposit_and_stake(
-            deposit_address,
-            token_address,
-            gauge_address,
-            n_coins_underlying - 1,
-            underlying_coin_addresses,
-            underlying_amounts,
-            0,
-            use_underlying,
-            {'from': margo, 'value': value_underlying}
-        )
-
-
 def test_balance(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
         underlying_coin_addresses, underlying_amounts, value_underlying, gauge, use_underlying
@@ -159,6 +140,24 @@ def test_wrong_coins(
             gauge_address,
             n_coins_underlying - 1,
             wrong_coin_addresses,
+            underlying_amounts,
+            0,
+            use_underlying,
+            {'from': margo, 'value': value_underlying}
+        )
+
+
+def test_wrong_order_of_coins(
+        zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
+        underlying_coin_addresses_wrong_order, underlying_amounts, value_underlying, use_underlying
+):
+    with brownie.reverts():
+        zap.deposit_and_stake(
+            deposit_address,
+            token_address,
+            gauge_address,
+            n_coins_underlying - 1,
+            underlying_coin_addresses_wrong_order,
             underlying_amounts,
             0,
             use_underlying,

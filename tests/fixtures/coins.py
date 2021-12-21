@@ -43,8 +43,22 @@ def wrapped_coin_addresses(wrapped_coins):
 
 
 @pytest.fixture(scope="module")
+def wrapped_coin_addresses_wrong_order(wrapped_coins):
+    addresses = list(map(lambda x: x if type(x) is str else x.address, wrapped_coins))
+    addresses.reverse()
+    return addresses + [ZERO_ADDRESS] * (5 - len(addresses))
+
+
+@pytest.fixture(scope="module")
 def underlying_coin_addresses(underlying_coins):
     addresses = list(map(lambda x: x if type(x) is str else x.address, underlying_coins))
+    return addresses + [ZERO_ADDRESS] * (5 - len(addresses))
+
+
+@pytest.fixture(scope="module")
+def underlying_coin_addresses_wrong_order(underlying_coins):
+    addresses = list(map(lambda x: x if type(x) is str else x.address, underlying_coins))
+    addresses.reverse()
     return addresses + [ZERO_ADDRESS] * (5 - len(addresses))
 
 
