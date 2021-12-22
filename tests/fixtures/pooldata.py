@@ -1,6 +1,6 @@
 import pytest
 import brownie
-from brownie import Contract
+from brownie import Contract, ZERO_ADDRESS
 
 # gusd
 gusd_token_address = "0xD2967f45c4f384DEEa880F807Be904762a3DeA07"
@@ -83,11 +83,13 @@ def wrong_amounts_to_mint():
     return [100 * 10 ** 18] * 5
 
 
+# Different amounts are needed to always pass test_wrong_order_of_coins
 @pytest.fixture(scope="module")
 def wrapped_amounts(wrapped_decimals, n_coins_wrapped):
     return [(10 + i) * 10 ** wrapped_decimals[i] for i in range(n_coins_wrapped)] + [0] * (5 - n_coins_wrapped)
 
 
+# Different amounts are needed to always pass test_wrong_order_of_coins
 @pytest.fixture(scope="module")
 def underlying_amounts(underlying_decimals, n_coins_underlying):
     return [(10 + i) * 10 ** underlying_decimals[i] for i in range(n_coins_underlying)] + [0] * (5 - n_coins_underlying)
@@ -130,6 +132,11 @@ def use_underlying(pool_data):
 @pytest.fixture(scope="module")
 def is_meta(pool_data):
     return "meta" in pool_data.get("pool_types", [])
+
+
+@pytest.fixture(scope="module")
+def factory_pool_address(pool_data):
+    return pool_data["swap_address"] if "factory" in pool_data.get("pool_types", []) else ZERO_ADDRESS
 
 
 @pytest.fixture(scope="module")

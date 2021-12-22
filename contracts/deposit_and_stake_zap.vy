@@ -38,6 +38,18 @@ interface PoolUseUnderlying4:
 interface PoolUseUnderlying5:
     def add_liquidity(amounts: uint256[5], min_mint_amount: uint256, use_underlying: bool): payable
 
+interface PoolFactory2:
+    def add_liquidity(pool: address, amounts: uint256[2], min_mint_amount: uint256): payable
+
+interface PoolFactory3:
+    def add_liquidity(pool: address, amounts: uint256[3], min_mint_amount: uint256): payable
+
+interface PoolFactory4:
+    def add_liquidity(pool: address, amounts: uint256[4], min_mint_amount: uint256): payable
+
+interface PoolFactory5:
+    def add_liquidity(pool: address, amounts: uint256[5], min_mint_amount: uint256): payable
+
 interface Gauge:
     def deposit(lp_token_amount: uint256, addr: address): payable
 
@@ -47,8 +59,25 @@ gauge_allowance: HashMap[address, bool]
 
 
 @internal
-def _add_liquidity(deposit_address: address, n_coins: int128, amounts: uint256[MAX_COINS], min_mint_amount: uint256, eth_value: uint256, use_underlying: bool):
-    if use_underlying:
+def _add_liquidity(
+        deposit_address: address,
+        n_coins: int128,
+        amounts: uint256[MAX_COINS],
+        min_mint_amount: uint256,
+        eth_value: uint256,
+        use_underlying: bool,
+        pool: address
+):
+    if pool != ZERO_ADDRESS:
+        if n_coins == 2:
+            PoolFactory2(deposit_address).add_liquidity(pool, [amounts[0], amounts[1]], min_mint_amount, value=eth_value)
+        elif n_coins == 3:
+            PoolFactory3(deposit_address).add_liquidity(pool, [amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
+        elif n_coins == 4:
+            PoolFactory4(deposit_address).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
+        elif n_coins == 5:
+            PoolFactory5(deposit_address).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
+    elif use_underlying:
         if n_coins == 2:
             PoolUseUnderlying2(deposit_address).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
         elif n_coins == 3:
@@ -95,7 +124,8 @@ def deposit_and_stake(
         coins: address[MAX_COINS],
         amounts: uint256[MAX_COINS],
         min_mint_amount: uint256,
-        use_underlying: bool,
+        use_underlying: bool, # for aave, saave, ib (use_underlying) and crveth, cvxeth (use_eth)
+        pool: address = ZERO_ADDRESS, # for factory
 ):
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
@@ -134,7 +164,7 @@ def deposit_and_stake(
         assert msg.value == 0
 
     # Reverts if n_coins is wrong
-    self._add_liquidity(deposit, n_coins, amounts, min_mint_amount, msg.value, use_underlying)
+    self._add_liquidity(deposit, n_coins, amounts, min_mint_amount, msg.value, use_underlying, pool)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0 # dev: swap-token mismatch
