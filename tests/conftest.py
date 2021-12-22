@@ -26,7 +26,7 @@ _pooldata = {}
 
 def pytest_addoption(parser):
     parser.addoption("--coins", help="wrapped or underlying")
-    parser.addoption("--pool", help="comma-separated list of pools to target")
+    parser.addoption("--pools", help="comma-separated list of pools to target")
 
 
 def pytest_sessionstart():
@@ -66,7 +66,7 @@ def pytest_generate_tests(metafunc):
     coins = metafunc.config.getoption("coins") or 'all'
 
     try:
-        params = metafunc.config.getoption("pool").split(",")
+        params = metafunc.config.getoption("pools").split(",")
     except Exception:
         params = POOLS if coins == 'wrapped' else LENDING_POOLS + META_POOLS + WETH_POOLS
 
