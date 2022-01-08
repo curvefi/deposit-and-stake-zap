@@ -97,22 +97,6 @@ def _add_liquidity(
             Pool5(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
 
 
-@internal
-def _safe_transfer(coin: address, from_address: address, amount: uint256):
-    # "safeTransferFrom" which works for ERC20s which return bool or not
-    _response: Bytes[32] = raw_call(
-        coin,
-        concat(
-            method_id("transferFrom(address,address,uint256)"),
-            convert(from_address, bytes32),
-            convert(self, bytes32),
-            convert(amount, bytes32),
-        ),
-        max_outsize=32,
-    )  # dev: failed transfer
-    if len(_response) > 0:
-        assert convert(_response, bool)  # dev: failed transfer
-
 @payable
 @external
 @nonreentrant('lock')
@@ -158,7 +142,19 @@ def deposit_and_stake(
             continue
 
         if amounts[i] > 0:
-            self._safe_transfer(coins[i], msg.sender, amounts[i])
+            # "safeTransferFrom" which works for ERC20s which return bool or not
+            _response: Bytes[32] = raw_call(
+                coins[i],
+                concat(
+                    method_id("transferFrom(address,address,uint256)"),
+                    convert(msg.sender, bytes32),
+                    convert(self, bytes32),
+                    convert(amounts[i], bytes32),
+                ),
+                max_outsize=32,
+            )  # dev: failed transfer
+            if len(_response) > 0:
+                assert convert(_response, bool)  # dev: failed transfer
 
     if not has_eth:
         assert msg.value == 0
