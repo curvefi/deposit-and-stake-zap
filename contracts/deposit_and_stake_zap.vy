@@ -2,7 +2,7 @@
 # A "zap" to add liquidity and deposit into gauge in one transaction
 # (c) Curve.Fi, 2021
 
-MAX_COINS: constant(int128) = 5
+MAX_COINS: constant(uint256) = 5
 ETH_ADDRESS: constant(address) = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
 
 # External Contracts
@@ -61,7 +61,7 @@ gauge_allowance: HashMap[address, bool]
 @internal
 def _add_liquidity(
         deposit_address: address,
-        n_coins: int128,
+        n_coins: uint256,
         amounts: uint256[MAX_COINS],
         min_mint_amount: uint256,
         eth_value: uint256,
@@ -120,7 +120,7 @@ def deposit_and_stake(
         deposit: address,
         lp_token: address,
         gauge: address,
-        n_coins: int128,
+        n_coins: uint256,
         coins: address[MAX_COINS],
         amounts: uint256[MAX_COINS],
         min_mint_amount: uint256,
