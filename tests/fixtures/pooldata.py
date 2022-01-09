@@ -27,8 +27,8 @@ def gauge_address(pool_data):
 
 
 @pytest.fixture(scope="module")
-def deposit_address(pool_data, has_zap):
-    return pool_data['zap_address'] if has_zap else pool_data['swap_address']
+def deposit_address(pool_data):
+    return pool_data['zap_address'] if 'zap_address' in pool_data else pool_data['swap_address']
 
 
 @pytest.fixture(scope="module")
@@ -44,11 +44,6 @@ def other_gauge_address(pool_data):
 @pytest.fixture(scope="module")
 def gauge(gauge_address):
     return Contract(gauge_address)
-
-
-@pytest.fixture(scope="module")
-def has_zap(pool_data):
-    return 'zap_address' in pool_data
 
 
 @pytest.fixture(scope="module")
@@ -137,8 +132,3 @@ def is_meta(pool_data):
 @pytest.fixture(scope="module")
 def factory_pool_address(pool_data):
     return pool_data["swap_address"] if "factory" in pool_data.get("pool_types", []) else ZERO_ADDRESS
-
-
-@pytest.fixture(scope="module")
-def is_v1(pool_data):
-    return pool_data['lp_contract'] == 'CurveTokenV1'
