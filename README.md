@@ -33,7 +33,7 @@ brownie test --network mainnet-fork
 To run for particular pools:
 
 ```bash
-brownie test --pools 3pool,usdt --network mainnet-fork
+brownie test --pools 3pool,compound,aave,usdn,mim,tricrypto2,crveth --network mainnet-fork
 ```
 
 To run only for underlying/wrapped coins:
