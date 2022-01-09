@@ -38,7 +38,7 @@ def other_token_address(pool_data):
 
 @pytest.fixture(scope="module")
 def other_gauge_address(pool_data):
-    return gusd_gauge_addresses if gusd_gauge_addresses != pool_data["gauge_addresses"][0] else gusd_token_address
+    return gusd_gauge_addresses if gusd_gauge_addresses != pool_data["gauge_addresses"][0] else susd_gauge_address
 
 
 @pytest.fixture(scope="module")
