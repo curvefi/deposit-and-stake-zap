@@ -17,7 +17,7 @@ Smart contract which allows add liquidity and deposit into gauge in one transact
 To get started, first create and initialize a Python [virtual environment](https://docs.python.org/3/library/venv.html). Next, clone the repo and install the developer dependencies:
 
 ```bash
-git clone https://github.com/Macket/deposit_and_stake_zap  <--- CHANGE
+git clone https://github.com/curvefi/deposit-and-stake-zap.git
 cd deposit-and-stake-zap
 pip install -r requirements.txt
 ```
