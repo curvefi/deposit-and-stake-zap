@@ -1,6 +1,6 @@
 # @version ^0.3.0
 # A "zap" to add liquidity and deposit into gauge in one transaction
-# (c) Curve.Fi, 2021
+# (c) Curve.Fi, 2022
 
 MAX_COINS: constant(uint256) = 5
 ETH_ADDRESS: constant(address) = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
