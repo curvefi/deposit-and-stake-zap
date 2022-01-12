@@ -5,8 +5,9 @@ from brownie import deposit_and_stake_zap, accounts
 
 
 def main():
-    txparams = {'from': accounts[0]}
+    txparams = {}
     if network.show_active() == 'mainnet':
         accounts.load('babe')
-        txparams.update({'from': accounts[0], 'priority_fee': '2 gwei'})
+        txparams.update({'priority_fee': '2 gwei'})
+    txparams.update({'from': accounts[0]})
     return deposit_and_stake_zap.deploy(txparams)
