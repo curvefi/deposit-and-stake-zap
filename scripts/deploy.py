@@ -9,5 +9,7 @@ def main():
     if network.show_active() == 'mainnet':
         accounts.load('babe')
         txparams.update({'priority_fee': '2 gwei'})
+    elif network.show_active() == 'polygon-main':
+        accounts.load('babe')
     txparams.update({'from': accounts[0]})
     return deposit_and_stake_zap.deploy(txparams)
