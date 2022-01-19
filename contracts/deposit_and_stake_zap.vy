@@ -60,7 +60,7 @@ gauge_allowance: HashMap[address, bool]
 
 @internal
 def _add_liquidity(
-        deposit_address: address,
+        deposit: address,
         n_coins: uint256,
         amounts: uint256[MAX_COINS],
         min_mint_amount: uint256,
@@ -70,31 +70,31 @@ def _add_liquidity(
 ):
     if pool != ZERO_ADDRESS:
         if n_coins == 2:
-            PoolFactory2(deposit_address).add_liquidity(pool, [amounts[0], amounts[1]], min_mint_amount, value=eth_value)
+            PoolFactory2(deposit).add_liquidity(pool, [amounts[0], amounts[1]], min_mint_amount, value=eth_value)
         elif n_coins == 3:
-            PoolFactory3(deposit_address).add_liquidity(pool, [amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
+            PoolFactory3(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
         elif n_coins == 4:
-            PoolFactory4(deposit_address).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
+            PoolFactory4(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
         elif n_coins == 5:
-            PoolFactory5(deposit_address).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
+            PoolFactory5(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
     elif use_underlying:
         if n_coins == 2:
-            PoolUseUnderlying2(deposit_address).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
+            PoolUseUnderlying2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
         elif n_coins == 3:
-            PoolUseUnderlying3(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, True, value=eth_value)
+            PoolUseUnderlying3(deposit).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, True, value=eth_value)
         elif n_coins == 4:
-            PoolUseUnderlying4(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, True, value=eth_value)
+            PoolUseUnderlying4(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, True, value=eth_value)
         elif n_coins == 5:
-            PoolUseUnderlying5(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, True, value=eth_value)
+            PoolUseUnderlying5(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, True, value=eth_value)
     else:
         if n_coins == 2:
-            Pool2(deposit_address).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=eth_value)
+            Pool2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=eth_value)
         elif n_coins == 3:
-            Pool3(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
+            Pool3(deposit).add_liquidity([amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
         elif n_coins == 4:
-            Pool4(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
+            Pool4(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
         elif n_coins == 5:
-            Pool5(deposit_address).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
+            Pool5(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
 
 
 @payable
