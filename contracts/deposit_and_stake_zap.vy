@@ -54,7 +54,7 @@ interface Gauge:
     def deposit(lp_token_amount: uint256, addr: address): payable
 
 
-allowance: HashMap[address, bool[MAX_COINS]]
+allowance: public(HashMap[address, HashMap[address, bool]])
 gauge_allowance: HashMap[address, bool]
 
 
@@ -119,10 +119,10 @@ def deposit_and_stake(
         if i >= n_coins:
             break
 
-        if coins[i] == ETH_ADDRESS or amounts[i] == 0 or self.allowance[deposit][i]:
+        if coins[i] == ETH_ADDRESS or amounts[i] == 0 or self.allowance[deposit][coins[i]]:
             continue
 
-        self.allowance[deposit][i] = True
+        self.allowance[deposit][coins[i]] = True
         ERC20(coins[i]).approve(deposit, MAX_UINT256)
 
     # Ensure allowance for gauge
