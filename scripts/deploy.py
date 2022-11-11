@@ -7,11 +7,9 @@ from brownie import deposit_and_stake_zap, accounts
 def main():
     txparams = {}
     if network.show_active() == 'mainnet':
-        accounts.load('babe')
+        accounts.load('curve-tester')
         txparams.update({'priority_fee': '2 gwei'})
-    elif network.show_active() == 'polygon-main':
-        accounts.load('babe')
-    elif network.show_active() == 'avalanche':
-        accounts.load('babe')
+    else:
+        accounts.load('curve-tester')
     txparams.update({'from': accounts[0]})
     return deposit_and_stake_zap.deploy(txparams)

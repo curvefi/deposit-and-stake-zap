@@ -46,6 +46,10 @@ or
 brownie test --coins wrapped --network mainnet-fork
 ```
 
+### Deploy
+```bash
+brownie run deploy --network <id>
+```
 
 ## License
 
