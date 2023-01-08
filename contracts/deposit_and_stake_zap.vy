@@ -1,8 +1,8 @@
-# @version ^0.3.0
+# @version ^0.3.7
 # A "zap" to add liquidity and deposit into gauge in one transaction
 # (c) Curve.Fi, 2022
 
-MAX_COINS: constant(uint256) = 5
+MAX_COINS: constant(uint256) = 6
 ETH_ADDRESS: constant(address) = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
 
 # External Contracts
@@ -50,6 +50,9 @@ interface PoolFactory4:
 interface PoolFactory5:
     def add_liquidity(pool: address, amounts: uint256[5], min_mint_amount: uint256): payable
 
+interface PoolFactory6:  # CRV/ATRICRYPTO, MATIC/ATRICRYPTO
+    def add_liquidity(pool: address, amounts: uint256[6], min_mint_amount: uint256, use_eth: bool): payable
+
 interface Gauge:
     def deposit(lp_token_amount: uint256, addr: address): payable
 
@@ -68,7 +71,7 @@ def _add_liquidity(
         use_underlying: bool,
         pool: address
 ):
-    if pool != ZERO_ADDRESS:
+    if pool != empty(address):
         if n_coins == 2:
             PoolFactory2(deposit).add_liquidity(pool, [amounts[0], amounts[1]], min_mint_amount, value=eth_value)
         elif n_coins == 3:
@@ -77,6 +80,8 @@ def _add_liquidity(
             PoolFactory4(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
         elif n_coins == 5:
             PoolFactory5(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
+        elif n_coins == 6:
+            PoolFactory6(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, True, value=eth_value)
     elif use_underlying:
         if n_coins == 2:
             PoolUseUnderlying2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
@@ -109,7 +114,7 @@ def deposit_and_stake(
         amounts: uint256[MAX_COINS],
         min_mint_amount: uint256,
         use_underlying: bool, # for aave, saave, ib (use_underlying) and crveth, cvxeth (use_eth)
-        pool: address = ZERO_ADDRESS, # for factory
+        pool: address = empty(address), # for factory
 ):
     assert n_coins >= 2, 'n_coins must be >=2'
     assert n_coins <= MAX_COINS, 'n_coins must be <=MAX_COINS'
@@ -123,12 +128,12 @@ def deposit_and_stake(
             continue
 
         self.allowance[deposit][coins[i]] = True
-        ERC20(coins[i]).approve(deposit, MAX_UINT256)
+        ERC20(coins[i]).approve(deposit, max_value(uint256))
 
     # Ensure allowance for gauge
     if not self.gauge_allowance[gauge]:
         self.gauge_allowance[gauge] = True
-        ERC20(lp_token).approve(gauge, MAX_UINT256)
+        ERC20(lp_token).approve(gauge, max_value(uint256))
 
     # Transfer coins from owner
     has_eth: bool = False
