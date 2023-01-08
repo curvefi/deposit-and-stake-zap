@@ -9,7 +9,7 @@ def main():
     if network.show_active() == 'mainnet':
         accounts.load('curve-tester')
         txparams.update({'priority_fee': '2 gwei'})
-    else:
+    elif not network.show_active().endswith("-fork"):
         accounts.load('curve-tester')
     txparams.update({'from': accounts[0]})
     return deposit_and_stake_zap.deploy(txparams)
