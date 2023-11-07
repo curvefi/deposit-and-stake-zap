@@ -1,6 +1,11 @@
 # @version ^0.3.7
-# A "zap" to add liquidity and deposit into gauge in one transaction
-# (c) Curve.Fi, 2022
+
+"""
+@title CurveDeposit&StakeZap
+@author Curve.Fi
+@license Copyright (c) Curve.Fi, 2020-2023 - all rights reserved
+@notice A zap to add liquidity to pool and deposit into gauge in one transaction
+"""
 
 MAX_COINS: constant(uint256) = 6
 ETH_ADDRESS: constant(address) = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
@@ -26,6 +31,9 @@ interface Pool4:
 interface Pool5:
     def add_liquidity(amounts: uint256[5], min_mint_amount: uint256): payable
 
+interface Pool6:
+    def add_liquidity(amounts: uint256[6], min_mint_amount: uint256): payable
+
 interface PoolUseUnderlying2:
     def add_liquidity(amounts: uint256[2], min_mint_amount: uint256, use_underlying: bool): payable
 
@@ -37,6 +45,9 @@ interface PoolUseUnderlying4:
 
 interface PoolUseUnderlying5:
     def add_liquidity(amounts: uint256[5], min_mint_amount: uint256, use_underlying: bool): payable
+
+interface PoolUseUnderlying6:
+    def add_liquidity(amounts: uint256[6], min_mint_amount: uint256, use_underlying: bool): payable
 
 interface PoolFactory2:
     def add_liquidity(pool: address, amounts: uint256[2], min_mint_amount: uint256): payable
@@ -91,6 +102,8 @@ def _add_liquidity(
             PoolUseUnderlying4(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, True, value=eth_value)
         elif n_coins == 5:
             PoolUseUnderlying5(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, True, value=eth_value)
+        elif n_coins == 6:
+            PoolUseUnderlying6(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, True, value=eth_value)
     else:
         if n_coins == 2:
             Pool2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=eth_value)
@@ -100,6 +113,8 @@ def _add_liquidity(
             Pool4(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3]], min_mint_amount, value=eth_value)
         elif n_coins == 5:
             Pool5(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
+        elif n_coins == 6:
+            Pool6(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, value=eth_value)
 
 
 @payable
