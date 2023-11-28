@@ -29,7 +29,7 @@ jobs:
           BRANCH_NAME="deployment-$CURRENT_REPOSITORY-$TAG"
 
           # Setup the committers identity.
-          git config user.email "Curve@users.noreply.github.com"
+          git config user.email "Curvefi@users.noreply.github.com"
           git config user.name "Curvefi"
 
           # Create a new feature branch for the changes.
