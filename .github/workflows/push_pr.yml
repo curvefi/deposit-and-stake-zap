@@ -23,7 +23,7 @@ jobs:
           TITLE="${{ github.event.release.name }}"
           NOTES="${{ github.event.release.body }}"
           DATE=$(date '+%d-%m-%Y')
-          mkdir deployments
+          mkdir -p deployments
           echo $NOTES >> "deployments/release-$TITLE-$DATE.txt"
 
           git config user.email "curvefi@users.noreply.github.com"
