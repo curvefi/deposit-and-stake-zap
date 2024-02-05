@@ -1,0 +1,27 @@
+{
+    "base_pool": "3pool",
+    "pool_types": ["meta", "factory"],
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0x00e6fd108c4640d21b40d02f18dd6fe7c7f725ca",
+    "lp_token_address": "0x00e6fd108c4640d21b40d02f18dd6fe7c7f725ca",
+    "zap_address": "0xA79828DF1850E8a3A3064576f380D90aECDD3359",
+    "gauge_addresses": ["0x2d5727a90edd42b4d666ff773c7809215284c326"],
+    "lp_constructor": {
+        "symbol": "USDV3crv",
+        "name": "USDV/3Crv"
+    },
+    "coins": [
+        {
+            "name": "USDV",
+            "decimals": 6,
+            "tethered": false,
+            "underlying_address": "0x0e573ce2736dd9637a0b21058352e1667925c7a8"
+        },
+        {
+            "name": "3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490"
+        }
+    ]
+}

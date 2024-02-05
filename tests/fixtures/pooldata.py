@@ -81,13 +81,13 @@ def wrong_amounts_to_mint():
 # Different amounts are needed to always pass test_wrong_order_of_coins
 @pytest.fixture(scope="module")
 def wrapped_amounts(wrapped_decimals, n_coins_wrapped):
-    return [(10 + i) * 10 ** wrapped_decimals[i] for i in range(n_coins_wrapped)] + [0] * (5 - n_coins_wrapped)
+    return [(10 + i) * 10 ** wrapped_decimals[i] for i in range(n_coins_wrapped)]
 
 
 # Different amounts are needed to always pass test_wrong_order_of_coins
 @pytest.fixture(scope="module")
 def underlying_amounts(underlying_decimals, n_coins_underlying):
-    return [(10 + i) * 10 ** underlying_decimals[i] for i in range(n_coins_underlying)] + [0] * (5 - n_coins_underlying)
+    return [(10 + i) * 10 ** underlying_decimals[i] for i in range(n_coins_underlying)]
 
 
 @pytest.fixture(scope="module")
@@ -132,3 +132,11 @@ def is_meta(pool_data):
 @pytest.fixture(scope="module")
 def factory_pool_address(pool_data):
     return pool_data["swap_address"] if "factory" in pool_data.get("pool_types", []) else ZERO_ADDRESS
+
+
+@pytest.fixture(scope="module")
+def is_plain_stable_ng(pool_data):
+    if pool_data['swap_address'] == "0x6685fcfce05e7502bf9f0aa03b36025b09374726":  # vETH/ETH
+        return True
+
+    return False

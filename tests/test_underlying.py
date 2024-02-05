@@ -6,7 +6,8 @@ pytestmark = pytest.mark.usefixtures("mint_margo", "approve_margo")
 
 def test_balance(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, gauge, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, gauge, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     assert gauge.balanceOf(margo.address) == 0
 
@@ -19,6 +20,7 @@ def test_balance(
         underlying_amounts,
         0,
         use_underlying,
+        is_plain_stable_ng,
         factory_pool_address,
         {'from': margo, 'value': value_underlying}
     )
@@ -29,7 +31,8 @@ def test_balance(
 
 def test_approve(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying, underlying_coin_addresses,
-        underlying_amounts, value_underlying, underlying_coins, lp_token, use_underlying, factory_pool_address
+        underlying_amounts, value_underlying, underlying_coins, lp_token, use_underlying, is_plain_stable_ng,
+        factory_pool_address
 ):
     for coin in underlying_coins:
         if coin == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE':
@@ -47,6 +50,7 @@ def test_approve(
         underlying_amounts,
         0,
         use_underlying,
+        is_plain_stable_ng,
         factory_pool_address,
         {'from': margo, 'value': value_underlying}
     )
@@ -61,9 +65,10 @@ def test_approve(
 
 def test_token_mismatch(
         zap, margo, deposit_address, other_token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
-    with brownie.reverts("dev: swap-token mismatch"):
+    with brownie.reverts():
         zap.deposit_and_stake(
             deposit_address,
             other_token_address,
@@ -73,6 +78,7 @@ def test_token_mismatch(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': value_underlying}
         )
@@ -80,7 +86,8 @@ def test_token_mismatch(
 
 def test_gauge_mismatch(
         zap, margo, deposit_address, token_address, other_gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     with brownie.reverts():
         zap.deposit_and_stake(
@@ -92,6 +99,7 @@ def test_gauge_mismatch(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': value_underlying}
         )
@@ -99,7 +107,8 @@ def test_gauge_mismatch(
 
 def test_n_coins_too_high(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     with brownie.reverts():
         zap.deposit_and_stake(
@@ -111,6 +120,7 @@ def test_n_coins_too_high(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': value_underlying}
         )
@@ -118,7 +128,8 @@ def test_n_coins_too_high(
 
 def test_n_coins_too_low(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     with brownie.reverts():
         zap.deposit_and_stake(
@@ -130,6 +141,7 @@ def test_n_coins_too_low(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': value_underlying}
         )
@@ -137,7 +149,8 @@ def test_n_coins_too_low(
 
 def test_wrong_coins(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        wrong_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        wrong_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     with brownie.reverts():
         zap.deposit_and_stake(
@@ -149,6 +162,7 @@ def test_wrong_coins(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': value_underlying}
         )
@@ -156,7 +170,8 @@ def test_wrong_coins(
 
 def test_wrong_order_of_coins(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses_wrong_order, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses_wrong_order, underlying_amounts, value_underlying,
+        use_underlying, is_plain_stable_ng, factory_pool_address
 ):
     with brownie.reverts():
         zap.deposit_and_stake(
@@ -168,6 +183,7 @@ def test_wrong_order_of_coins(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': value_underlying}
         )
@@ -175,7 +191,8 @@ def test_wrong_order_of_coins(
 
 def test_wrong_value(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     with brownie.reverts():
         zap.deposit_and_stake(
@@ -187,6 +204,7 @@ def test_wrong_value(
             underlying_amounts,
             0,
             use_underlying,
+            is_plain_stable_ng,
             factory_pool_address,
             {'from': margo, 'value': 0 if value_underlying > 0 else 10**18}
         )
@@ -194,7 +212,8 @@ def test_wrong_value(
 
 def test_wrong_use_underlying(
         zap, margo, deposit_address, token_address, gauge_address, n_coins_underlying,
-        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying, factory_pool_address
+        underlying_coin_addresses, underlying_amounts, value_underlying, use_underlying,
+        is_plain_stable_ng, factory_pool_address
 ):
     if factory_pool_address == brownie.ZERO_ADDRESS:
         with brownie.reverts():
@@ -207,6 +226,7 @@ def test_wrong_use_underlying(
                 underlying_amounts,
                 0,
                 not use_underlying,
+                is_plain_stable_ng,
                 factory_pool_address,
                 {'from': margo, 'value': value_underlying}
             )

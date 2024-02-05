@@ -1,0 +1,25 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0x6685fcfce05e7502bf9f0aa03b36025b09374726",
+    "lp_token_address": "0x6685fcfce05e7502bf9f0aa03b36025b09374726",
+    "gauge_addresses": ["0x8dff75976f22db58d7c3fd7b68d782238b0dbe30"],
+    "lp_constructor": {
+        "name": "vETH/ETH",
+        "symbol": "vETHETH"
+    },
+    "coins": [
+        {
+            "name": "vETH",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x38d64ce1bdf1a9f24e0ec469c9cade61236fb4a0"
+        },
+        {
+            "name": "WETH",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+
+        }
+    ]
+}
