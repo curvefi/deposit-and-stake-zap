@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from brownie import network
-from brownie import deposit_and_stake_zap, accounts
+from brownie import DepositAndStakeZap, accounts
 
 
 def main():
@@ -12,4 +12,4 @@ def main():
     elif not network.show_active().endswith("-fork"):
         accounts.load('curve-deployer')
     txparams.update({'from': accounts[0]})
-    return deposit_and_stake_zap.deploy(txparams)
+    return DepositAndStakeZap.deploy(txparams)
