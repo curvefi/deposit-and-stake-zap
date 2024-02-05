@@ -5,11 +5,11 @@ from pathlib import Path
 from brownie.project.main import get_loaded_projects
 
 POOLS = ['3pool', 'aave', 'aeth', 'bbtc', 'busd', 'compound', 'dusd', 'gusd', 'hbtc', 'husd', 'ib', 'link', 'musd', 'obtc',
-         'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdn', 'usdp', 'usdt',
+         'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdp', 'usdt',
          'ust', 'y', 'tricrypto2', 'eurt', 'eurtusd', 'crveth', 'cvxeth', 'tusd', 'veth', 'usdv']  # 'eurs'
 
 LENDING_POOLS = ['compound', 'usdt', 'y', 'busd', 'pax', 'aave', 'saave', 'ib']
-META_POOLS = ['gusd', 'husd', 'usdk', 'usdn', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp', 'eurtusd', 'usdv']
+META_POOLS = ['gusd', 'husd', 'usdk', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp', 'eurtusd', 'usdv']
 FACTORY_POOOLS = ['tusd']  # 'frax', 'lusd', 'busdv2', 'alusd', 'mim'
 WETH_POOLS = ['tricrypto2', 'crveth', 'cvxeth']
 
