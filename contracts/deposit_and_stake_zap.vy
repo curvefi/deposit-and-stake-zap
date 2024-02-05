@@ -7,7 +7,7 @@
 @notice A zap to add liquidity to pool and deposit into gauge in one transaction
 """
 
-MAX_COINS: constant(uint256) = 6
+MAX_COINS: constant(uint256) = 8
 ETH_ADDRESS: constant(address) = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
 
 # External Contracts
@@ -64,8 +64,11 @@ interface PoolFactory5:
 interface PoolFactory6:  # CRV/ATRICRYPTO, MATIC/ATRICRYPTO
     def add_liquidity(pool: address, amounts: uint256[6], min_mint_amount: uint256, use_eth: bool): payable
 
+interface PoolStableNg:
+    def add_liquidity(_amounts: DynArray[uint256, MAX_COINS], _min_mint_amount: uint256): nonpayable
+
 interface Gauge:
-    def deposit(lp_token_amount: uint256, addr: address): payable
+    def deposit(lp_token_amount: uint256, addr: address): nonpayable
 
 
 allowance: public(HashMap[address, HashMap[address, bool]])
@@ -76,13 +79,16 @@ gauge_allowance: HashMap[address, bool]
 def _add_liquidity(
         deposit: address,
         n_coins: uint256,
-        amounts: uint256[MAX_COINS],
+        amounts: DynArray[uint256, MAX_COINS],
         min_mint_amount: uint256,
         eth_value: uint256,
         use_underlying: bool,
+        is_plain_stable_ng: bool,
         pool: address
 ):
-    if pool != empty(address):
+    if is_plain_stable_ng:
+        PoolStableNg(deposit).add_liquidity(amounts, min_mint_amount)
+    elif pool != empty(address):
         if n_coins == 2:
             PoolFactory2(deposit).add_liquidity(pool, [amounts[0], amounts[1]], min_mint_amount, value=eth_value)
         elif n_coins == 3:
@@ -93,6 +99,8 @@ def _add_liquidity(
             PoolFactory5(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
         elif n_coins == 6:
             PoolFactory6(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, True, value=eth_value)
+        else:
+            raise
     elif use_underlying:
         if n_coins == 2:
             PoolUseUnderlying2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
@@ -104,6 +112,8 @@ def _add_liquidity(
             PoolUseUnderlying5(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, True, value=eth_value)
         elif n_coins == 6:
             PoolUseUnderlying6(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, True, value=eth_value)
+        else:
+            raise
     else:
         if n_coins == 2:
             Pool2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, value=eth_value)
@@ -115,6 +125,8 @@ def _add_liquidity(
             Pool5(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4]], min_mint_amount, value=eth_value)
         elif n_coins == 6:
             Pool6(deposit).add_liquidity([amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, value=eth_value)
+        else:
+            raise
 
 
 @payable
@@ -125,10 +137,11 @@ def deposit_and_stake(
         lp_token: address,
         gauge: address,
         n_coins: uint256,
-        coins: address[MAX_COINS],
-        amounts: uint256[MAX_COINS],
+        coins: DynArray[address, MAX_COINS],
+        amounts: DynArray[uint256, MAX_COINS],
         min_mint_amount: uint256,
         use_underlying: bool, # for aave, saave, ib (use_underlying) and crveth, cvxeth (use_eth)
+        is_plain_stable_ng: bool,
         pool: address = empty(address), # for factory
 ):
     assert n_coins >= 2, 'n_coins must be >=2'
@@ -180,7 +193,7 @@ def deposit_and_stake(
         assert msg.value == 0
 
     # Reverts if n_coins is wrong
-    self._add_liquidity(deposit, n_coins, amounts, min_mint_amount, msg.value, use_underlying, pool)
+    self._add_liquidity(deposit, n_coins, amounts, min_mint_amount, msg.value, use_underlying, is_plain_stable_ng, pool)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0 # dev: swap-token mismatch
