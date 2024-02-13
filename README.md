@@ -2,6 +2,19 @@
 
 Smart contract which allows add liquidity and deposit into gauge in one transaction.
 
+- Ethereum: [0xBFab8ebc836E1c4D81837798FC076D219C9a1855](https://etherscan.io/address/0xBFab8ebc836E1c4D81837798FC076D219C9a1855#code)
+- Optimism: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://optimistic.etherscan.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
+- Gnosis (xDai): [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://gnosisscan.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
+- Polygon: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://polygonscan.com/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
+- Fantom: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://ftmscan.com/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
+- Kava: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://explorer.kava.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD/contracts)
+- Arbitrum: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://arbiscan.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
+- Avalanche: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://snowtrace.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
+- Base: [0x69522fb5337663d3B4dFB0030b881c1A750Adb4f](https://basescan.org/address/0x69522fb5337663d3B4dFB0030b881c1A750Adb4f#code)
+- BSC: [0x4f37A9d177470499A2dD084621020b023fcffc1F](https://bscscan.com/address/0x4f37A9d177470499A2dD084621020b023fcffc1F#code)
+- Fraxtal: [0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF](https://fraxscan.com/address/0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF#code)
+
+
 ## Testing and Development
 
 ### Dependencies

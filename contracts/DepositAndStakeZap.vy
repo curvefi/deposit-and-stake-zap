@@ -3,7 +3,7 @@
 """
 @title CurveDeposit&StakeZap
 @author Curve.Fi
-@license Copyright (c) Curve.Fi, 2020-2023 - all rights reserved
+@license Copyright (c) Curve.Fi, 2020-2024 - all rights reserved
 @notice A zap to add liquidity to pool and deposit into gauge in one transaction
 """
 
