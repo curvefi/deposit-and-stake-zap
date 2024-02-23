@@ -135,8 +135,13 @@ def factory_pool_address(pool_data):
 
 
 @pytest.fixture(scope="module")
-def is_plain_stable_ng(pool_data):
-    if pool_data['swap_address'] == "0x6685fcfce05e7502bf9f0aa03b36025b09374726":  # vETH/ETH
+def use_dynarray(pool_data):
+    ng_pools = [
+        "0x6685fcfce05e7502bf9f0aa03b36025b09374726",  # vETH/ETH
+        "0x383e6b4437b59fff47b619cba855ca29342a8559",  # PayPool
+        "0x9e10f9fb6f0d32b350cee2618662243d4f24c64a",  # mkUSD
+    ]
+    if pool_data['swap_address'] in ng_pools:
         return True
 
     return False

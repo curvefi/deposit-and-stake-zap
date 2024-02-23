@@ -1,0 +1,26 @@
+{
+    "base_pool": "paypool",
+    "pool_types": ["meta", "factory"],
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0x9e10f9fb6f0d32b350cee2618662243d4f24c64a",
+    "lp_token_address": "0x9e10f9fb6f0d32b350cee2618662243d4f24c64a",
+    "zap_address": "0xE07a16358aA878CBDa2D49A88E5106871E0db307",
+    "gauge_addresses": ["0x088a9770bc30627791f42b551d474e8fd44808a2"],
+    "lp_constructor": {
+        "symbol": "mkUSDPay",
+        "name": "Curve.fi mkUSD/Paypool"
+    },
+    "coins": [
+        {
+            "name": "mkUSD",
+            "decimals": 18,
+            "underlying_address": "0x4591dbff62656e7859afe5e45f6f47d3669fbb28"
+        },
+        {
+            "name": "PYUSDUSDC",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x383e6b4437b59fff47b619cba855ca29342a8559"
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0x383e6b4437b59fff47b619cba855ca29342a8559",
+    "lp_token_address": "0x383e6b4437b59fff47b619cba855ca29342a8559",
+    "gauge_addresses": ["0x9da75997624c697444958aded6790bfca96af19a"],
+    "lp_constructor": {
+        "name": "PayPool",
+        "symbol": "PayPool"
+    },
+    "coins": [
+        {
+            "name": "PYUSD",
+            "decimals": 6,
+            "underlying_address": "0x6c3ea9036406852006290770bedfcaba0e23a0e8"
+        },
+        {
+            "name": "USDC",
+            "decimals": 6,
+            "underlying_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+
+        }
+    ]
+}
