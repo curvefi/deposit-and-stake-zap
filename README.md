@@ -2,7 +2,7 @@
 
 Smart contract which allows add liquidity and deposit into gauge in one transaction.
 
-- Ethereum: [0xBFab8ebc836E1c4D81837798FC076D219C9a1855](https://etherscan.io/address/0xBFab8ebc836E1c4D81837798FC076D219C9a1855#code)
+- Ethereum: [0x56C526b0159a258887e0d79ec3a80dfb940d0cD7](https://etherscan.io/address/0x56C526b0159a258887e0d79ec3a80dfb940d0cD7#code)
 - Optimism: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://optimistic.etherscan.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
 - Gnosis (xDai): [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://gnosisscan.io/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
 - Polygon: [0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD](https://polygonscan.com/address/0x37c5ab57AF7100Bdc9B668d766e193CCbF6614FD#code)
