@@ -67,6 +67,9 @@ interface PoolFactory6:  # CRV/ATRICRYPTO, MATIC/ATRICRYPTO
 interface PoolStableNg:
     def add_liquidity(_amounts: DynArray[uint256, MAX_COINS], _min_mint_amount: uint256): nonpayable
 
+interface PoolFactoryWithStableNgBase:
+    def add_liquidity(pool: address, _amounts: DynArray[uint256, MAX_COINS], _min_mint_amount: uint256): nonpayable
+
 interface Gauge:
     def deposit(lp_token_amount: uint256, addr: address): nonpayable
 
@@ -83,13 +86,13 @@ def _add_liquidity(
         min_mint_amount: uint256,
         eth_value: uint256,
         use_underlying: bool,
-        is_plain_stable_ng: bool,
+        use_dynarray: bool,
         pool: address
 ):
-    if is_plain_stable_ng:
-        PoolStableNg(deposit).add_liquidity(amounts, min_mint_amount)
-    elif pool != empty(address):
-        if n_coins == 2:
+    if pool != empty(address):
+        if use_dynarray:
+            PoolFactoryWithStableNgBase(deposit).add_liquidity(pool, amounts, min_mint_amount)
+        elif n_coins == 2:
             PoolFactory2(deposit).add_liquidity(pool, [amounts[0], amounts[1]], min_mint_amount, value=eth_value)
         elif n_coins == 3:
             PoolFactory3(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2]], min_mint_amount, value=eth_value)
@@ -101,6 +104,8 @@ def _add_liquidity(
             PoolFactory6(deposit).add_liquidity(pool, [amounts[0], amounts[1], amounts[2], amounts[3], amounts[4], amounts[5]], min_mint_amount, True, value=eth_value)
         else:
             raise
+    elif use_dynarray:
+        PoolStableNg(deposit).add_liquidity(amounts, min_mint_amount)
     elif use_underlying:
         if n_coins == 2:
             PoolUseUnderlying2(deposit).add_liquidity([amounts[0], amounts[1]], min_mint_amount, True, value=eth_value)
@@ -141,7 +146,7 @@ def deposit_and_stake(
         amounts: DynArray[uint256, MAX_COINS],
         min_mint_amount: uint256,
         use_underlying: bool, # for aave, saave, ib (use_underlying) and crveth, cvxeth (use_eth)
-        is_plain_stable_ng: bool,
+        use_dynarray: bool,
         pool: address = empty(address), # for factory
 ):
     assert n_coins >= 2, 'n_coins must be >=2'
@@ -193,7 +198,7 @@ def deposit_and_stake(
         assert msg.value == 0
 
     # Reverts if n_coins is wrong
-    self._add_liquidity(deposit, n_coins, amounts, min_mint_amount, msg.value, use_underlying, is_plain_stable_ng, pool)
+    self._add_liquidity(deposit, n_coins, amounts, min_mint_amount, msg.value, use_underlying, use_dynarray, pool)
 
     lp_token_amount: uint256 = ERC20(lp_token).balanceOf(self)
     assert lp_token_amount > 0 # dev: swap-token mismatch
