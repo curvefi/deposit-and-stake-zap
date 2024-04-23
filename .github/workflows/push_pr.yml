@@ -109,4 +109,4 @@ jobs:
             --body "${{ github.event.release.body }}" \
             --title "Deployment from $CURRENT_REPOSITORY - $TAG" \
             --head "$BRANCH_NAME" \
-            --base "master"
+            --base "main"
