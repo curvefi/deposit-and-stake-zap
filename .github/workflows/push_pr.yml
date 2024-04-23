@@ -2,7 +2,7 @@ on:
   release:
     types: [ created ]
 
-name: on-creating-new-tag
+name: push-changes-on-release
 
 jobs:
   send-pull-requests:
