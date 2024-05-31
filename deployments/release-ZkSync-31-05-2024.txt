@@ -1,0 +1,1 @@
+ZkSync Deposit&StakeZap: [0x253548e98C769aD2850da8DB3E4c2b2cE46E3839](https://explorer.zksync.io/address/0x253548e98C769aD2850da8DB3E4c2b2cE46E3839#contract)
