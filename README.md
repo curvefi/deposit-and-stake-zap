@@ -15,6 +15,7 @@ Smart contract which allows add liquidity and deposit into gauge in one transact
 - Fraxtal: [0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF](https://fraxscan.com/address/0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF#code)
 - X Layer: [0x5552b631e2ad801faa129aacf4b701071cc9d1f7](https://www.oklink.com/xlayer/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7/contract)
 - Mantle: [0x5552b631e2ad801faa129aacf4b701071cc9d1f7](https://mantlescan.xyz/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+- ZkSync: [0x253548e98C769aD2850da8DB3E4c2b2cE46E3839](https://explorer.zksync.io/address/0x253548e98C769aD2850da8DB3E4c2b2cE46E3839#contract)
 
 
 
