@@ -1,0 +1,18 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0x004c167d27ada24305b76d80762997fa6eb8d9b2",
+    "lp_token_address": "0x004c167d27ada24305b76d80762997fa6eb8d9b2",
+    "gauge_addresses": ["0x16a3a047fc1d388d5846a73acdb475b11228c299"],
+    "coins": [
+        {
+            "name": "WETH",
+            "decimals": 18,
+            "underlying_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        },
+        {
+            "name": "CVG",
+            "decimals": 18,
+            "underlying_address": "0x97effb790f2fbb701d88f89db4521348a2b77be8"
+        }
+    ]
+}

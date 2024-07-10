@@ -6,7 +6,7 @@ from brownie.project.main import get_loaded_projects
 
 POOLS = ['3pool', 'aave', 'aeth', 'bbtc', 'busd', 'compound', 'dusd', 'gusd', 'hbtc', 'husd', 'ib', 'link', 'musd', 'obtc',
          'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdp', 'usdt',
-         'y', 'tricrypto2', 'eurt', 'eurtusd', 'cvxeth', 'tusd', 'veth', 'usdv', 'paypool', 'mkusd']  # 'eurs'
+         'y', 'tricrypto2', 'eurt', 'eurtusd', 'cvxeth', 'tusd', 'veth', 'usdv', 'paypool', 'mkusd', 'cvgeth', 'tricryptoUSDT']  # 'eurs'
 
 LENDING_POOLS = ['compound', 'usdt', 'y', 'busd', 'pax', 'aave', 'saave', 'ib']
 META_POOLS = ['gusd', 'husd', 'usdk', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'usdp', 'eurtusd', 'usdv', 'mkusd']

@@ -1,0 +1,23 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0xf5f5b97624542d72a9e06f04804bf81baa15e2b4",
+    "lp_token_address": "0xf5f5b97624542d72a9e06f04804bf81baa15e2b4",
+    "gauge_addresses": ["0xf29fff074f5cf755b55fbb3eb10a29203ac91ea2"],
+    "coins": [
+        {
+            "name": "USDT",
+            "decimals": 6,
+            "underlying_address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+        },
+        {
+            "name": "WBTC",
+            "decimals": 8,
+            "underlying_address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+        },
+        {
+            "name": "WETH",
+            "decimals": 18,
+            "underlying_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        }
+    ]
+}
