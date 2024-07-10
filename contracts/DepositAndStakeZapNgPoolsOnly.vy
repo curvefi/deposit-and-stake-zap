@@ -3,6 +3,7 @@
 
 """
 @title CurveDeposit&StakeZap
+@custom:version 1.0.0
 @author Curve.Fi
 @license Copyright (c) Curve.Fi, 2020-2024 - all rights reserved
 @notice A zap to add liquidity to pool and deposit into gauge in one transaction
@@ -10,8 +11,6 @@
 
 version: public(constant(String[8])) = "1.0.0"
 
-
-MAX_COINS: constant(uint256) = 9
 
 # External Contracts
 from vyper.interfaces import ERC20
@@ -30,6 +29,10 @@ interface MetaZap:
 
 interface Gauge:
     def deposit(lp_token_amount: uint256, addr: address): nonpayable
+
+
+MAX_COINS: constant(uint256) = 9
+
 
 @external
 @nonreentrant('lock')
